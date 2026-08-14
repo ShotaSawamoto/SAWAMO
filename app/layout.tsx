@@ -8,15 +8,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   const baseUrl = new URL(`${protocol}://${host}`);
   const title = "Shota Sawamoto — Guesthouse, Guide & Development";
-  const description = "熊野を拠点に、民泊運営、観光案内・撮影、Web/アプリ開発、AI英語コーチングを行うポートフォリオサイト。";
+  const description = "和歌山県田辺市を拠点に、民泊運営、観光案内・撮影、Web/アプリ開発、AI英語コーチングを行うポートフォリオサイト。";
 
   return {
     metadataBase: baseUrl,
     title,
     description,
     icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
-    openGraph: { title, description, type: "website", images: [{ url: "/og.png", width: 1200, height: 630 }] },
-    twitter: { card: "summary_large_image", title, description, images: ["/og.png"] },
+    openGraph: { title, description, type: "website" },
+    twitter: { card: "summary", title, description },
   };
 }
 
