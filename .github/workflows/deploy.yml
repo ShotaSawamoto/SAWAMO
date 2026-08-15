@@ -33,6 +33,11 @@ jobs:
         -o ConnectionAttempts=1
         -o ServerAliveInterval=15
         -o ServerAliveCountMax=4
+      # Server-managed paths that must survive an --delete sync.
+      RSYNC_EXCLUDES: >-
+        --exclude=.well-known/
+        --exclude=.user.ini
+        --exclude=.htpasswd
 
     steps:
       - name: Check out repository
@@ -165,7 +170,7 @@ jobs:
       - name: Preview changes on the server
         shell: bash
         run: |
-          rsync -az --delete --dry-run --itemize-changes \
+          rsync -az --delete $RSYNC_EXCLUDES --dry-run --itemize-changes \
             -e "ssh $SSH_OPTS -p $XSERVER_SSH_PORT" \
             dist/ "$XSERVER_USER@$XSERVER_HOST:$XSERVER_DEPLOY_PATH"
 
@@ -173,7 +178,7 @@ jobs:
         shell: bash
         run: |
           for attempt in 1 2 3; do
-            if rsync -az --delete \
+            if rsync -az --delete $RSYNC_EXCLUDES \
                 -e "ssh $SSH_OPTS -p $XSERVER_SSH_PORT" \
                 dist/ "$XSERVER_USER@$XSERVER_HOST:$XSERVER_DEPLOY_PATH"; then
               exit 0
