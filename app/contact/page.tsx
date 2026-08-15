@@ -37,7 +37,7 @@ export default function ContactPage() {
     };
 
     try {
-      const response = await fetch("https://formsubmit.co/ajax/sawamo.umehikari@gmail.com", {
+      const response = await fetch("https://formsubmit.co/ajax/info@sawamo.jp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -128,7 +128,7 @@ export default function ContactPage() {
 
           <div className="contact-form-status" aria-live="polite">
             {submitState === "success" && <p className="success">お問い合わせを送信しました。ありがとうございます。</p>}
-            {submitState === "error" && <p className="error">送信できませんでした。時間をおいて再度お試しいただくか、sawamo.umehikari@gmail.comへ直接ご連絡ください。</p>}
+            {submitState === "error" && <p className="error">送信できませんでした。時間をおいて再度お試しいただくか、info@sawamo.jpへ直接ご連絡ください。</p>}
           </div>
         </form>
       </section>

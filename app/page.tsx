@@ -63,6 +63,13 @@ const services = [
   },
 ];
 
+function renderServiceCopy(service: { no: string; copy: string }) {
+  const ending = service.no === "01" ? "確かな収益化を実現します。" : "";
+  if (!ending || !service.copy.endsWith(ending)) return service.copy;
+
+  return <>{service.copy.slice(0, -ending.length)}<span className="service-copy-ending">{ending}</span></>;
+}
+
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -223,17 +230,21 @@ export default function Home() {
                   <p className="service-ja">{service.ja.split("\n").map((line, index) => <span key={index}>{line}</span>)}</p>
                   <h3>{service.title.split("\n").map((line, index) => <span key={index}>{line}</span>)}</h3>
                 </div>
-                <div className="service-summary">
+                <div className="service-summary service-summary-trigger">
                   <p className="service-lead">{service.lead}</p>
-                  <p className="service-copy">{service.copy}</p>
+                  <p className="service-copy">{renderServiceCopy(service)}</p>
                 </div>
                 <span className="service-action" aria-hidden="true">
-                  <span className="service-action-label">{openService === service.no ? "閉じる" : "写真・実績を見る"}</span>
+                  <span className="service-action-label">{openService === service.no ? "閉じる" : "詳細"}</span>
                   <span className="service-arrow">↓</span>
                 </span>
               </button>
               <div className="service-panel" id={`service-panel-${service.no}`} aria-hidden={openService !== service.no}>
                 <div className="service-panel-inner">
+                  <div className="service-summary service-summary-panel">
+                    <p className="service-lead">{service.lead}</p>
+                    <p className="service-copy">{renderServiceCopy(service)}</p>
+                  </div>
                   {service.works.length > 0 ? (
                     <div className="service-works">
                       {service.works.map((work) => (

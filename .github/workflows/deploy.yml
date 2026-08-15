@@ -1,0 +1,79 @@
+name: Deploy to XServer
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+    env:
+      XSERVER_HOST: ${{ secrets.XSERVER_HOST }}
+      XSERVER_USER: ${{ secrets.XSERVER_USER }}
+      XSERVER_SSH_KEY: ${{ secrets.XSERVER_SSH_KEY }}
+      XSERVER_HOST_KEY: ${{ secrets.XSERVER_HOST_KEY }}
+      XSERVER_DEPLOY_PATH: ${{ secrets.XSERVER_DEPLOY_PATH }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build website
+        run: npm run build
+
+      - name: Validate deployment settings
+        shell: bash
+        run: |
+          test -n "$XSERVER_HOST"
+          test -n "$XSERVER_USER"
+          test -n "$XSERVER_SSH_KEY"
+          test -n "$XSERVER_HOST_KEY"
+          case "$XSERVER_DEPLOY_PATH" in
+            /home/*/sawamo.jp/public_html/) ;;
+            *) echo "XSERVER_DEPLOY_PATH is not the expected sawamo.jp public_html path." >&2; exit 1 ;;
+          esac
+
+      - name: Configure SSH
+        shell: bash
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$XSERVER_SSH_KEY" > ~/.ssh/id_xserver
+          chmod 600 ~/.ssh/id_xserver
+          printf '%s\n' "$XSERVER_HOST_KEY" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Verify destination
+        shell: bash
+        run: |
+          ssh -i ~/.ssh/id_xserver -p 10022 \
+            "$XSERVER_USER@$XSERVER_HOST" \
+            "test -d '$XSERVER_DEPLOY_PATH'"
+
+      - name: Deploy website
+        shell: bash
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/id_xserver -p 10022" \
+            dist/ "$XSERVER_USER@$XSERVER_HOST:$XSERVER_DEPLOY_PATH"
+
