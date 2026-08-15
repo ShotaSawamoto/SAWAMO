@@ -5,9 +5,15 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      retry_attempt:
+        description: "Internal counter used to retry on a runner with a different egress IP."
+        required: false
+        default: "0"
 
 permissions:
   contents: read
+  actions: write
 
 concurrency:
   group: production-deploy
@@ -122,6 +128,7 @@ jobs:
           echo "known_hosts entry for port $XSERVER_SSH_PORT found."
 
       - name: Diagnose network reachability
+        id: reachability
         shell: bash
         run: |
           echo "Runner egress IP: $(curl -fsS --max-time 15 https://api.ipify.org || echo 'unavailable')"
@@ -146,6 +153,7 @@ jobs:
           if [ "$reachable" = yes ]; then
             echo "TCP port $XSERVER_SSH_PORT is reachable from this runner."
           else
+            echo "blocked=true" >> "$GITHUB_OUTPUT"
             echo "::error::TCP port $XSERVER_SSH_PORT is NOT reachable from this GitHub-hosted runner."
             echo "The host resolves correctly, so this is a network-level block rather than an SSH problem."
             echo "Check the XServer server panel: SSH setting is ON, and the access restriction"
@@ -197,3 +205,20 @@ jobs:
             echo "$url -> $code"
             [ "$code" = "200" ] || { echo "::error::$url returned $code"; exit 1; }
           done
+
+      # XServer intermittently blocks some GitHub-hosted runner egress IPs at the
+      # network level. Re-dispatching lands the job on a different runner IP.
+      - name: Retry on a different runner IP
+        if: failure() && steps.reachability.outputs.blocked == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ATTEMPT: ${{ github.event.inputs.retry_attempt || '0' }}
+        run: |
+          next=$((ATTEMPT + 1))
+          if [ "$next" -gt 3 ]; then
+            echo "::error::Still blocked after $ATTEMPT automatic retries. Allow the runner IP in the XServer panel."
+            exit 0
+          fi
+          echo "Dispatching retry $next of 3..."
+          gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY" --ref main -f retry_attempt="$next"
