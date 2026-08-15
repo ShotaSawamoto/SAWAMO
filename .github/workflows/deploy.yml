@@ -63,6 +63,16 @@ jobs:
           printf '%s\n' "$XSERVER_HOST_KEY" > ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
+          if ! ssh-keygen -y -P "" -f ~/.ssh/id_xserver > /dev/null 2>&1; then
+            echo "XSERVER_SSH_KEY is invalid or protected by a passphrase." >&2
+            exit 1
+          fi
+
+          if ! ssh-keygen -F "[$XSERVER_HOST]:10022" -f ~/.ssh/known_hosts > /dev/null; then
+            echo "XSERVER_HOST_KEY does not match XSERVER_HOST on port 10022." >&2
+            exit 1
+          fi
+
       - name: Verify destination
         shell: bash
         run: |
