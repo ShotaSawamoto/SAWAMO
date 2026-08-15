@@ -72,37 +72,38 @@ function renderServiceCopy(service: { no: string; copy: string }) {
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [openService, setOpenService] = useState<string | null>(null);
-  const stabilizingScroll = useRef<{ frame: number; previousBehavior: string } | null>(null);
-
-  const stopStabilizingScroll = () => {
-    if (!stabilizingScroll.current) return;
-    cancelAnimationFrame(stabilizingScroll.current.frame);
-    document.documentElement.style.scrollBehavior = stabilizingScroll.current.previousBehavior;
-    stabilizingScroll.current = null;
-  };
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onScroll = () => {
+    // The progress bar is written straight to the DOM and throttled to one frame,
+    // so scrolling never re-renders the page while a panel is animating.
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
       const height = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(height > 0 ? window.scrollY / height : 0);
+      const ratio = height > 0 ? window.scrollY / height : 0;
+      if (progressRef.current) progressRef.current.style.transform = `scaleX(${ratio})`;
       if (window.scrollY > 20) setHasScrolled(true);
     };
-    onScroll();
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
-      stopStabilizingScroll();
+      if (frame) cancelAnimationFrame(frame);
     };
   }, []);
 
   const closeMenu = () => setMenuOpen(false);
 
   const toggleService = (serviceNo: string, trigger: HTMLButtonElement) => {
-    stopStabilizingScroll();
-
     if (openService === serviceNo) {
       setOpenService(null);
       return;
@@ -114,42 +115,31 @@ export default function Home() {
       return;
     }
 
-    const initialTop = article.getBoundingClientRect().top;
+    // The destination is worked out once, from the layout as it stands before the
+    // accordion moves. Correcting the scroll position frame by frame while the panel
+    // animates makes the page shake on touch devices.
     const headerHeight = document.querySelector<HTMLElement>(".site-header")?.getBoundingClientRect().height ?? 0;
-    const targetTop = headerHeight;
-    const root = document.documentElement;
-    const previousBehavior = root.style.scrollBehavior;
+
+    // A panel closing above this item pulls it upwards by its own height.
+    const closing = document.querySelector<HTMLElement>(".service.open");
+    const closesAbove =
+      closing !== null &&
+      closing !== article &&
+      Boolean(closing.compareDocumentPosition(article) & Node.DOCUMENT_POSITION_FOLLOWING);
+    const shiftAbove = closesAbove
+      ? closing.querySelector<HTMLElement>(".service-panel-inner")?.getBoundingClientRect().height ?? 0
+      : 0;
+
+    const target = window.scrollY + article.getBoundingClientRect().top - headerHeight - shiftAbove;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const duration = reducedMotion ? 60 : 520;
-    const moveDuration = reducedMotion ? 1 : 360;
-    const startedAt = performance.now();
-    root.style.scrollBehavior = "auto";
+
     setOpenService(serviceNo);
-
-    const stabilize = (now: number) => {
-      const elapsed = now - startedAt;
-      const moveProgress = Math.min(elapsed / moveDuration, 1);
-      const easedProgress = 1 - Math.pow(1 - moveProgress, 3);
-      const desiredTop = initialTop + (targetTop - initialTop) * easedProgress;
-      const offset = article.getBoundingClientRect().top - desiredTop;
-      if (Math.abs(offset) > 0.5) window.scrollBy(0, offset);
-
-      if (elapsed < duration) {
-        const frame = requestAnimationFrame(stabilize);
-        stabilizingScroll.current = { frame, previousBehavior };
-      } else {
-        root.style.scrollBehavior = previousBehavior;
-        stabilizingScroll.current = null;
-      }
-    };
-
-    const frame = requestAnimationFrame(stabilize);
-    stabilizingScroll.current = { frame, previousBehavior };
+    window.scrollTo({ top: Math.max(target, 0), behavior: reducedMotion ? "auto" : "smooth" });
   };
 
   return (
     <main id="top">
-      <div className="progress" style={{ transform: `scaleX(${progress})` }} />
+      <div className="progress" ref={progressRef} style={{ transform: "scaleX(0)" }} />
 
       <header className="site-header">
         <div className="brand">
