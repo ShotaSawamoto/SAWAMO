@@ -82,8 +82,8 @@ button { font: inherit; }
 .service-trigger { position: relative; z-index: 1; width: 100%; padding: 34px 5vw; display: grid; grid-template-columns: 52% 41% 7%; align-items: start; border: 0; color: inherit; background: transparent; text-align: left; cursor: pointer; }
 .service-ja { margin: 0 0 22px; color: #083846; font-size: clamp(24px, 3.5vw, 54px); font-weight: 700; line-height: 1.25; letter-spacing: -.035em; transition: color .45s; }
 .service-ja span { display: block; }
-.service h3 { margin: 0; font-size: clamp(34px, 4.8vw, 76px); line-height: .98; letter-spacing: -.045em; font-weight: 700; }
-.service h3 span { display: block; }
+.service h3 { margin: 0; font-size: clamp(28px, 3.7vw, 58px); line-height: .98; letter-spacing: -.045em; font-weight: 700; }
+.service h3 span { display: block; white-space: nowrap; }
 .service-panel { position: relative; z-index: 1; display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .45s cubic-bezier(.22,1,.36,1), opacity .3s; }
 .service-panel-inner { min-height: 0; overflow: hidden; padding: 0 5vw; border-top: 1px solid var(--line); }
 .service-summary { grid-column: 2; margin: 4px 2vw 0 0; }
@@ -206,7 +206,7 @@ footer p, footer p:last-child { margin: 0; text-align: center; }
   .about-copy { grid-template-columns: 1fr; margin: 36px 0 0; gap: 32px; }
   .service-trigger { grid-template-columns: 1fr; padding: 26px 3vw; }
   .service-ja { font-size: clamp(22px, 6.2vw, 26px); }
-  .service h3 { font-size: clamp(30px, 8.2vw, 32px); }
+  .service h3 { font-size: clamp(23px, 6.4vw, 26px); }
   .service-summary { grid-column: 1; margin: 26px 0 0; }
   .service-lead { font-size: 18px; letter-spacing: -.12em; }
   .service-copy { padding-right: 0; }
@@ -223,8 +223,10 @@ footer p, footer p:last-child { margin: 0; text-align: center; }
   .service-gallery figure { border-radius: 2px 24px 2px 24px; }
   .service:hover { background: transparent; color: white; }
   .service:hover .service-ja { color: #083846; }
+  .service:hover .service-lead { color: #d9ffff; }
   .service.open { color: var(--ink); background: rgba(255,255,255,.96); }
   .service.open .service-ja { color: var(--deep); }
+  .service.open .service-lead { color: var(--teal); }
   .service.open .service-action { border-color: var(--teal); color: var(--deep); }
   .service.open .service-arrow { color: var(--teal); border-color: var(--teal); }
   .contact-main { margin-top: 32px; text-align: center; }

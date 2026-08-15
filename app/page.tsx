@@ -53,7 +53,7 @@ const services = [
   },
   {
     no: "04",
-    title: "AI-Based English\nCoaching",
+    title: "AI-Based English Coaching",
     ja: "AI英語コーチング",
     lead: "AIで、一人ひとりに最適な英語学習を。",
     copy: "独自のAI英語学習アプリを活用し、あなたの苦手分野を精密に特定し、一人ひとりの目標とレベルに合わせた最適な学習プランをご提案。さらに、AIを活用したリアルで実践的な英会話トレーニングにより、最短距離での英語力向上をサポートします。",
