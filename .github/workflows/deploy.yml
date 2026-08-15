@@ -67,6 +67,11 @@ jobs:
         shell: bash
         run: |
           ssh -i ~/.ssh/id_xserver -p 10022 \
+            -o BatchMode=yes \
+            -o ConnectTimeout=20 \
+            -o ConnectionAttempts=1 \
+            -o ServerAliveInterval=10 \
+            -o ServerAliveCountMax=2 \
             "$XSERVER_USER@$XSERVER_HOST" \
             "test -d '$XSERVER_DEPLOY_PATH'"
 
@@ -74,6 +79,5 @@ jobs:
         shell: bash
         run: |
           rsync -az --delete \
-            -e "ssh -i ~/.ssh/id_xserver -p 10022" \
+            -e "ssh -i ~/.ssh/id_xserver -p 10022 -o BatchMode=yes -o ConnectTimeout=20 -o ConnectionAttempts=1 -o ServerAliveInterval=10 -o ServerAliveCountMax=2" \
             dist/ "$XSERVER_USER@$XSERVER_HOST:$XSERVER_DEPLOY_PATH"
-
