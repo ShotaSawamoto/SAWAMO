@@ -93,8 +93,8 @@ jobs:
             *' '*|*$'\t'*) echo "XSERVER_USER contains whitespace." >&2; exit 1 ;;
           esac
           case "$XSERVER_DEPLOY_PATH" in
-            /home/*/sawamo.jp/public_html/) ;;
-            *) echo "XSERVER_DEPLOY_PATH is not the expected sawamo.jp public_html path." >&2; exit 1 ;;
+            /home/*/kumanotrailstays.com/public_html/) ;;
+            *) echo "XSERVER_DEPLOY_PATH is not the expected kumanotrailstays.com public_html path." >&2; exit 1 ;;
           esac
 
           if [ "$XSERVER_HOST" = "sv17179.xserver.jp" ]; then
@@ -200,7 +200,7 @@ jobs:
       - name: Verify published site
         shell: bash
         run: |
-          for url in https://sawamo.jp/ https://sawamo.jp/contact; do
+          for url in https://kumanotrailstays.com/ https://kumanotrailstays.com/contact; do
             code="$(curl -fsS -o /dev/null -w '%{http_code}' --max-time 30 "$url" || echo 000)"
             echo "$url -> $code"
             [ "$code" = "200" ] || { echo "::error::$url returned $code"; exit 1; }

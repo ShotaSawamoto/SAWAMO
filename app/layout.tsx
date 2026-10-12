@@ -7,8 +7,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   const baseUrl = new URL(`${protocol}://${host}`);
-  const title = "Shota Sawamoto — Guesthouse, Guide & Development";
-  const description = "和歌山県田辺市を拠点に、民泊運営、観光案内・撮影、Web/アプリ開発、AI英語コーチングを行うポートフォリオサイト。";
+  const title = "Kumano Trail Stays — 宿と旅で、熊野と世界をつなぐ。";
+  const description = "和歌山県田辺市を拠点に、民泊開設コンサルティング、民泊管理運営代行、熊野古道通訳案内を行うKumano Trail Stays公式サイト。";
 
   return {
     metadataBase: baseUrl,

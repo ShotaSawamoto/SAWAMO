@@ -3,8 +3,8 @@
 
   # Always use the canonical HTTPS URL without www.
   RewriteCond %{HTTPS} !=on [OR]
-  RewriteCond %{HTTP_HOST} ^www\.sawamo\.jp$ [NC]
-  RewriteRule ^ https://sawamo.jp%{REQUEST_URI} [R=301,L]
+  RewriteCond %{HTTP_HOST} !^kumanotrailstays\.com$ [NC]
+  RewriteRule ^ https://kumanotrailstays.com%{REQUEST_URI} [R=301,L]
 
   # Serve the Vite application for routes such as /contact.
   RewriteCond %{REQUEST_FILENAME} !-f

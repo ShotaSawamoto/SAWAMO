@@ -1,285 +1,67 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "./useLanguage";
 
 const services = [
-  {
-    no: "01",
-    title: "Guesthouse",
-    ja: "民泊開設・管理運営",
-    lead: "民泊経営を、ワンストップで。",
-    copy: "豊富な民泊事業の運営実績をベースに、許認可取得から、日々の運営管理、カスタマーサポートまで、民泊経営のすべてをワンストップでお任せいただけます。オーナー様の資産価値を高め、確かな収益化を実現します。",
-    works: [
-      {
-        name: "Guesthouse Fukufuku",
-        image: "/brand/guesthouse-fukufuku.png",
-        url: "https://www.booking.com/hotel/jp/guesthouse-fukufuku.ja.html",
-      },
-      {
-        name: "workation + guesthouse Ōgama",
-        image: "/brand/workation-guesthouse-ogama.avif",
-        url: "https://www.airbnb.jp/rooms/1467783801385196536?check_in=2026-09-22&check_out=2026-09-24&location=%E3%81%99%E3%81%95%E3%81%BF&search_mode=regular_search&source_impression_id=p3_1786746349_P3ffVY3wiotQuMqc&previous_page_section_name=1001&federated_search_id=23a6152e-cb47-4164-879a-37cbbaa0177b",
-      },
-    ],
-    photos: [],
-    tone: "sand",
-  },
-  {
-    no: "02",
-    title: "Guiding &\nPhotograph, Videos",
-    ja: "熊野古道観光案内・\n写真及び動画撮影",
-    lead: "熊野古道の物語と、旅の瞬間を残す。",
-    copy: "神聖な空気が満ちる世界遺産「熊野古道」。歴史や自然に精通したガイドが古の道をご案内するとともに、その旅のワンシーンをプロのカメラワークで写真と動画に残します。\n地図を見るだけでは味わえないディープな歴史解説や自然の背景に触れながら、自分たちだけでは撮影しづらい自然体の笑顔や、雄大な自然の中を歩くドラマチックな瞬間を美しく切り取ります。",
-    works: [],
-    photos: [
-      "/brand/kumano-gallery/kumano-01.jpg",
-      "/brand/kumano-gallery/kumano-03.jpg",
-      "/brand/kumano-gallery/kumano-06.jpg",
-      "/brand/kumano-gallery/kumano-08.jpg",
-      "/brand/kumano-gallery/kumano-09.jpg",
-      "/brand/kumano-gallery/kumano-10.jpg",
-    ],
-    tone: "moss",
-  },
-  {
-    no: "03",
-    title: "Software, Product,\nand Web/App Development",
-    ja: "ソフトウェア・プロダクト\nWeb/アプリ開発",
-    lead: "構想から運用まで、ビジネスに伴走。",
-    copy: "お客様のビジネスにおける複雑な課題解決や、ゼロから創り出す新規事業の立ち上げに向け、要件定義からUI/UXデザイン、システム設計、開発、そしてリリース後の運用・保守まで、すべてのフェーズを一気通貫でサポートいたします。\n常に「ユーザーファースト」の視点に立った設計を追求することで、ビジネスの成果に直結する確かな価値を持つソフトウェア・プロダクトを提供します。\nお客様のビジネスの成長を長期的に加速させる最適なパートナーとして、構想段階から伴走し、理想を形にするお手伝いをいたします。",
-    works: [],
-    photos: [],
-    tone: "blue",
-  },
-  {
-    no: "04",
-    title: "AI-Based English Coaching",
-    ja: "AI英語コーチング",
-    lead: "AIで、一人ひとりに最適な英語学習を。",
-    copy: "独自のAI英語学習アプリを活用し、あなたの苦手分野を精密に特定し、一人ひとりの目標とレベルに合わせた最適な学習プランをご提案。さらに、AIを活用したリアルで実践的な英会話トレーニングにより、最短距離での英語力向上をサポートします。",
-    works: [],
-    photos: [],
-    tone: "coral",
-  },
+  { id:"consulting", audience:"business", ja:"民泊開設コンサルティング", en:"Guesthouse Setup Consulting", leadJa:"宿を始める、その一歩目から。", leadEn:"From the first idea to opening day.", copyJa:"物件や地域の特性を活かしたコンセプト設計から、許認可取得、設備・備品の選定、料金設計、予約サイトへの掲載、運営体制づくりまで。民泊開設に必要な工程を整理し、開業まで伴走します。", copyEn:"From concept development that makes the most of your property and its location to licensing, equipment selection, pricing, booking-site setup and operating systems, we organise every step required to open your guesthouse and support you through launch.", detailJa:"初めて宿泊事業に取り組む方にも分かりやすく、実際の運営を見据えた無理のない計画をご提案します。", detailEn:"We provide clear, practical plans for first-time accommodation operators, always designed with day-to-day operations in mind.", photos:[] },
+  { id:"management", audience:"business", ja:"民泊管理運営代行", en:"Guesthouse Management", leadJa:"日々の運営を、地域から支える。", leadEn:"Reliable local support for everyday operations.", copyJa:"予約管理、ゲストとの連絡、チェックイン案内、清掃手配、価格調整、カスタマーサポートまで、宿の運営を一括して支援します。", copyEn:"We provide end-to-end operational support, including reservation management, guest communication, check-in guidance, cleaning coordination, pricing adjustments and customer service.", detailJa:"オーナー様の負担を減らしながら、ゲストに選ばれ続ける宿づくりと、安定した運営を目指します。", detailEn:"Our goal is to reduce the owner’s workload while building a well-run property that guests continue to choose.", photos:[] },
+  { id:"staying", audience:"consumer", ja:"管理施設での宿泊", en:"Stays at Managed Properties", leadJa:"熊野で、心地よく滞在する。", leadEn:"A welcoming base for your time in Kumano.", copyJa:"Kumano Trail Staysが管理運営をお手伝いしている宿泊施設をご案内します。地域での時間をゆっくりと楽しめる、それぞれに個性のある宿を掲載しています。", copyEn:"Discover accommodation whose day-to-day operations are supported by Kumano Trail Stays. Each property offers its own welcoming base from which to enjoy the region at a relaxed pace.", detailJa:"現在、自社で保有・直営する宿泊施設はありません。掲載しているのは、オーナー様から管理運営をお任せいただいている施設です。ご予約や空室状況は、各施設の予約ページでご確認いただけます。", detailEn:"We do not currently own or directly operate accommodation. The properties shown here are independently owned and managed with our operational support. Availability and bookings are handled through each property’s booking page.", ctaJa:"宿泊施設を見る", ctaEn:"View places to stay", ctaHref:"#stays", photos:[] },
+  { id:"guiding", audience:"consumer", ja:"熊野古道通訳案内", en:"Kumano Kodo Guiding & Interpretation", leadJa:"道の物語を知れば、旅はもっと深くなる。", leadEn:"Discover the stories that make every step meaningful.", copyJa:"世界遺産・熊野古道の歴史、信仰、自然、地域の暮らしを、歩くペースに合わせてご案内します。英語での通訳案内に加え、ツアー中の自然な表情や古道を歩く姿を写真に収め、ご希望に応じて旅の動画も制作します。", copyEn:"Explore the history, spirituality, nature and local life of the World Heritage Kumano Kodo at a pace that suits you. Alongside English-language guiding and interpretation, we photograph natural moments on the trail and can also create a video of your journey on request.", detailJa:"地図を見るだけでは出会えない背景や物語に触れながら、ご自身では残しにくい旅の瞬間を美しく記録します。熊野で過ごす時間と、その記憶を持ち帰れる旅をお手伝いします。", detailEn:"Go beyond the map, connect with the stories behind the trail and bring home beautiful images of moments that are difficult to capture by yourself.", photos:["/brand/kumano-gallery/kumano-01.jpg","/brand/kumano-gallery/kumano-03.jpg","/brand/kumano-gallery/kumano-06.jpg","/brand/kumano-gallery/kumano-08.jpg","/brand/kumano-gallery/kumano-09.jpg","/brand/kumano-gallery/kumano-10.jpg"] },
 ];
 
-function renderServiceCopy(service: { no: string; copy: string }) {
-  const ending = service.no === "01" ? "確かな収益化を実現します。" : "";
-  if (!ending || !service.copy.endsWith(ending)) return service.copy;
+const serviceGroups = [
+  { id:"business", label:"to B", titleJa:"宿泊事業者・オーナーの方へ", titleEn:"For businesses & property owners" },
+  { id:"consumer", label:"to C", titleJa:"熊野を旅する方へ", titleEn:"For travellers to Kumano" },
+];
 
-  return <>{service.copy.slice(0, -ending.length)}<span className="service-copy-ending">{ending}</span></>;
-}
+const stays = [
+  { name:"Guesthouse Fukufuku", image:"/brand/guesthouse-fukufuku.png", url:"https://www.booking.com/hotel/jp/guesthouse-fukufuku.ja.html", label:"Guesthouse / Tanabe" },
+  { name:"workation + guesthouse Ōgama", image:"/brand/workation-guesthouse-ogama.avif", url:"https://www.airbnb.jp/rooms/1467783801385196536", label:"Workation stay / Susami" },
+];
 
 export default function Home() {
+  const { language, toggleLanguage } = useLanguage();
+  const isEn = language === "en";
   const [menuOpen, setMenuOpen] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [openService, setOpenService] = useState<string | null>(null);
   const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // The progress bar is written straight to the DOM and throttled to one frame,
-    // so scrolling never re-renders the page while a panel is animating.
     let frame = 0;
-
-    const update = () => {
-      frame = 0;
-      const height = document.documentElement.scrollHeight - window.innerHeight;
-      const ratio = height > 0 ? window.scrollY / height : 0;
-      if (progressRef.current) progressRef.current.style.transform = `scaleX(${ratio})`;
-      if (window.scrollY > 20) setHasScrolled(true);
-    };
-
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (frame) cancelAnimationFrame(frame);
-    };
+    const update = () => { frame = 0; const height = document.documentElement.scrollHeight - window.innerHeight; if (progressRef.current) progressRef.current.style.transform = `scaleX(${height > 0 ? window.scrollY / height : 0})`; if (window.scrollY > 20) setHasScrolled(true); };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update(); window.addEventListener("scroll", onScroll, { passive:true });
+    return () => { window.removeEventListener("scroll", onScroll); if (frame) cancelAnimationFrame(frame); };
   }, []);
 
   const closeMenu = () => setMenuOpen(false);
-
-  const toggleService = (serviceNo: string, trigger: HTMLButtonElement) => {
-    if (openService === serviceNo) {
-      setOpenService(null);
-      return;
-    }
-
-    const article = trigger.closest<HTMLElement>(".service");
-    if (!article) {
-      setOpenService(serviceNo);
-      return;
-    }
-
-    // The destination is worked out once, from the layout as it stands before the
-    // accordion moves. Correcting the scroll position frame by frame while the panel
-    // animates makes the page shake on touch devices.
-    const headerHeight = document.querySelector<HTMLElement>(".site-header")?.getBoundingClientRect().height ?? 0;
-
-    // A panel closing above this item pulls it upwards by its own height.
-    const closing = document.querySelector<HTMLElement>(".service.open");
-    const closesAbove =
-      closing !== null &&
-      closing !== article &&
-      Boolean(closing.compareDocumentPosition(article) & Node.DOCUMENT_POSITION_FOLLOWING);
-    const shiftAbove = closesAbove
-      ? closing.querySelector<HTMLElement>(".service-panel-inner")?.getBoundingClientRect().height ?? 0
-      : 0;
-
-    const target = window.scrollY + article.getBoundingClientRect().top - headerHeight - shiftAbove;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    setOpenService(serviceNo);
-    window.scrollTo({ top: Math.max(target, 0), behavior: reducedMotion ? "auto" : "smooth" });
+  const toggleService = (id:string, trigger:HTMLButtonElement) => {
+    if (openService === id) { setOpenService(null); return; }
+    const article = trigger.closest<HTMLElement>(".service-card");
+    const headerHeight = document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 0;
+    setOpenService(id);
+    if (article) requestAnimationFrame(() => window.scrollTo({ top:Math.max(0,window.scrollY + article.getBoundingClientRect().top - headerHeight - 12), behavior:"smooth" }));
   };
 
-  return (
-    <main id="top">
-      <div className="progress" ref={progressRef} style={{ transform: "scaleX(0)" }} />
+  return <main id="top" lang={language}>
+    <div className="progress" ref={progressRef} />
+    <header className="site-header">
+      <a className="brand" href="#top" onClick={closeMenu} aria-label="Kumano Trail Stays"><img src="/brand/kumano-trail-stays-logo.png" alt="Kumano Trail Stays" /></a>
+      <nav className={menuOpen ? "nav open" : "nav"} aria-label={isEn ? "Main navigation" : "メインナビゲーション"}><a href="#about" onClick={closeMenu}>About</a><a href="#services" onClick={closeMenu}>Services</a><a href="#stays" onClick={closeMenu}>Stays</a><a href="#contact" onClick={closeMenu}>Contact</a></nav>
+      <div className="header-actions"><button className="language-switch" type="button" onClick={toggleLanguage} aria-label={isEn ? "日本語に切り替える" : "Switch to English"}><span>{isEn ? "JP" : "EN"}</span><small>{isEn ? "日本語" : "English"}</small></button><button className={menuOpen ? "menu-button open" : "menu-button"} type="button" aria-label={menuOpen ? (isEn ? "Close menu" : "メニューを閉じる") : (isEn ? "Open menu" : "メニューを開く")} aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}><span /><span /></button></div>
+    </header>
 
-      <header className="site-header">
-        <div className="brand">
-          <img className="brand-mark" src="/brand/sawamo-mark-transparent.png" alt="" />
-          <span className="brand-name">SAWAMO</span>
-        </div>
-        <nav className={menuOpen ? "nav open" : "nav"} aria-label="メインナビゲーション">
-          <a href="#about" onClick={closeMenu}>About</a>
-          <a href="#works" onClick={closeMenu}>Works / Services</a>
-          <a href="#contact" onClick={closeMenu}>Contact</a>
-        </nav>
-        <button
-          className={menuOpen ? "menu-button open" : "menu-button"}
-          type="button"
-          aria-label={menuOpen ? "メニューを閉じる" : "メニューを開く"}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((value) => !value)}
-        >
-          <span /><span />
-        </button>
-      </header>
+    <section className="hero" aria-labelledby="hero-title"><div className="hero-image" aria-hidden="true" /><div className="hero-overlay" aria-hidden="true" /><div className="hero-content"><p className="hero-eyebrow">Kumano Trail Stays — Tanabe, Wakayama</p>{isEn ? <><h1 id="hero-title" className="hero-title-en"><span>Connecting Kumano</span><span>with the world.</span></h1><p className="hero-en" lang="ja">宿と旅で、熊野と世界をつなぐ。</p></> : <><h1 id="hero-title"><span>宿と旅で、</span><span>熊野と世界をつなぐ。</span></h1><p className="hero-en" lang="en">Connecting Kumano with the world<br />through stays and journeys.</p></>}<div className="hero-actions"><a className="button button-solid" href="#services">{isEn ? "Explore our services" : "サービスを見る"}<span>↓</span></a><a className="button button-ghost" href="/contact">{isEn ? "Contact us" : "お問い合わせ"}<span>↗</span></a></div></div><div className="trail-lines" aria-hidden="true"><i /><i /><i /></div><a className={`scroll-cue ${hasScrolled ? "hidden" : ""}`} href="#about" aria-hidden={hasScrolled} tabIndex={hasScrolled ? -1 : undefined}><span>Scroll to explore</span><b>↓</b></a></section>
 
-      <section className="hero" aria-labelledby="hero-title">
-        <h1 id="hero-title" className="hero-title">
-          <span>地域のために、</span>
-          <span>自分ができることを。</span>
-          <span className="hero-en" lang="en">What I can do for the community.</span>
-        </h1>
-        <a
-          className={`scroll-cue ${hasScrolled ? "hidden" : ""}`}
-          href="#about"
-          aria-label="Aboutへスクロール"
-          aria-hidden={hasScrolled}
-          tabIndex={hasScrolled ? -1 : undefined}
-        >
-          <span>Scroll</span>
-          <b aria-hidden="true">↓</b>
-        </a>
-        <div className="water-sculpture" aria-hidden="true">
-          <span /><span /><span /><span />
-        </div>
-        <div className="bubbles bubbles-one" aria-hidden="true"><i /><i /><i /><i /></div>
-        <div className="bubbles bubbles-two" aria-hidden="true"><i /><i /><i /></div>
-      </section>
+    <section className="about section" id="about" aria-labelledby="about-title"><div className="section-heading"><p>About</p><h2 id="about-title">{isEn ? <>Creating new ways to stay<br />and travel in Kumano.</> : <>熊野で、宿と旅の<br />新しい選択肢をつくる。</>}</h2></div><div className="about-grid"><div className="about-copy">{isEn ? <><p>Based in Tanabe, Wakayama, Kumano Trail Stays supports the setup and operation of accommodation and provides guided interpretation on the Kumano Kodo.</p><p>Drawing on our local experience and practical knowledge of hospitality, we create welcoming stays and meaningful encounters for both visitors and the people who call Kumano home.</p></> : <><p>Kumano Trail Staysは、和歌山県田辺市を拠点に、宿泊施設の開設・運営と熊野古道の通訳案内を行っています。</p><p>地域で暮らしてきた経験と、宿泊事業に携わってきた知識を活かし、熊野を訪れる人と地域で暮らす人の双方にとって、心地よい滞在と新しい出会いをつくります。</p></>}</div><div className="about-principle"><span>Our purpose</span><strong>{isEn ? <>Rooted locally.<br />Open to the world.</> : <>地域に根ざし、<br />世界へひらく。</>}</strong></div></div></section>
 
-      <section className="about section" id="about" aria-label="About">
-        <div className="section-label">
-          <p>About</p>
-        </div>
-        <div className="about-copy">
-          <figure className="about-photo">
-            <img src="/brand/profile-dual.jpg" alt="澤本将太のビジネスとアウトドアのプロフィール写真" />
-          </figure>
-          <div className="about-detail">
-            <h2>澤本 将太 / Shota Sawamoto</h2>
-            <p>田辺で暮らし、地域の人や風景に触れるなかで見えてきた課題に、自分の経験と技術で向き合いたい。そんな思いから、民泊の開設・運営、熊野古道の観光案内と撮影、ソフトウェア開発、AI英語コーチングに取り組んでいます。</p>
-            <p>宿を整え、旅の魅力を伝え、必要な仕組みをつくり、学びを支える。分野は違っても、目指しているのは地域で暮らす人と訪れる人の選択肢を増やすこと。小さな実践を積み重ねながら、田辺のこれからに役立つ仕事を育てていきます。</p>
-          </div>
-        </div>
-      </section>
+    <section className="services section" id="services" aria-labelledby="services-title"><div className="section-heading light"><p>Services</p><h2 id="services-title">{isEn ? "Nurturing stays. Deepening journeys." : "宿を育て、旅を深める。"}</h2></div><p className="service-guide">{isEn ? "Select a service to learn more." : "各サービスを選択すると詳細をご覧いただけます。"}</p><div className="service-groups">{serviceGroups.map((group) => <section className="service-group" key={group.id} aria-labelledby={`service-group-${group.id}`}><div className="service-group-heading"><span>{group.label}</span><h3 id={`service-group-${group.id}`}>{isEn ? group.titleEn : group.titleJa}</h3></div><div className="service-list">{services.filter((service) => service.audience === group.id).map((service) => { const index = services.findIndex((item) => item.id === service.id); return <article className={`service-card ${openService === service.id ? "open" : ""}`} key={service.id}><button className="service-trigger" type="button" aria-expanded={openService === service.id} aria-controls={`service-${service.id}`} onClick={(event) => toggleService(service.id,event.currentTarget)}><span className="service-number">0{index+1}</span><span className="service-titles"><strong>{isEn ? service.en : service.ja}</strong><small>{isEn ? service.ja : service.en}</small></span><span className="service-lead">{isEn ? service.leadEn : service.leadJa}</span><span className="service-toggle" aria-hidden="true"><i />{openService === service.id ? "Close" : "View"}</span></button><div className="service-panel" id={`service-${service.id}`} aria-hidden={openService !== service.id}><div className="service-panel-inner"><p>{isEn ? service.copyEn : service.copyJa}</p><p>{isEn ? service.detailEn : service.detailJa}</p>{service.photos.length > 0 && <div className="service-gallery" aria-label={isEn ? "Kumano Kodo guiding and photography gallery" : "熊野古道通訳案内・撮影ギャラリー"}>{service.photos.map((photo,photoIndex) => <figure key={photo}><img src={photo} alt={isEn ? `Kumano Kodo guiding and photography work ${photoIndex+1}` : `熊野古道での通訳案内・撮影作品 ${photoIndex+1}`} loading="lazy" /></figure>)}</div>}<a href={service.ctaHref ?? "/contact"}>{isEn ? (service.ctaEn ?? "Ask about this service") : (service.ctaJa ?? "このサービスについて相談する")}<span>→</span></a></div></div></article>; })}</div></section>)}</div></section>
 
-      <section className="works section" id="works" aria-labelledby="works-title">
-        <div className="section-label light">
-          <p id="works-title">Works / Services</p>
-        </div>
-        <p className="works-mobile-guide">各項目をタップすると、写真や実績をご覧いただけます。</p>
-        <div className="service-list">
-          {services.map((service) => (
-            <article className={`service ${service.tone} ${openService === service.no ? "open" : ""}`} key={service.no}>
-              <button
-                className="service-trigger"
-                type="button"
-                aria-expanded={openService === service.no}
-                aria-controls={`service-panel-${service.no}`}
-                onClick={(event) => toggleService(service.no, event.currentTarget)}
-              >
-                <div className="service-title-wrap">
-                  <p className="service-ja">{service.ja.split("\n").map((line, index) => <span key={index}>{line}</span>)}</p>
-                  <h3>{service.title.split("\n").map((line, index) => <span key={index}>{line}</span>)}</h3>
-                </div>
-                <div className="service-summary service-summary-trigger">
-                  <p className="service-lead">{service.lead}</p>
-                  <p className="service-copy">{renderServiceCopy(service)}</p>
-                </div>
-                <span className="service-action" aria-hidden="true">
-                  <span className="service-action-label">{openService === service.no ? "閉じる" : "詳細"}</span>
-                  <span className="service-arrow">↓</span>
-                </span>
-              </button>
-              <div className="service-panel" id={`service-panel-${service.no}`} aria-hidden={openService !== service.no}>
-                <div className="service-panel-inner">
-                  <div className="service-summary service-summary-panel">
-                    <p className="service-lead">{service.lead}</p>
-                    <p className="service-copy">{renderServiceCopy(service)}</p>
-                  </div>
-                  {service.works.length > 0 ? (
-                    <div className="service-works">
-                      {service.works.map((work) => (
-                        <a className="service-work" href={work.url} target="_blank" rel="noreferrer" aria-label={`${work.name}の予約ページを開く`} key={work.url}>
-                          <strong>{work.name}</strong>
-                          <span className="service-work-visual">
-                            <img src={work.image} alt={`${work.name}の室内`} />
-                          </span>
-                        </a>
-                      ))}
-                    </div>
-                  ) : service.photos.length > 0 ? (
-                    <div className="service-gallery" aria-label="熊野古道で撮影した写真">
-                      {service.photos.map((photo, index) => (
-                        <figure key={photo}>
-                          <img src={photo} alt={`熊野古道での観光案内・撮影作品 ${index + 1}`} loading="lazy" />
-                        </figure>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="service-future"><span>Photos / Works / Links</span>写真・実績・関連リンクは今後追加予定です。</p>
-                  )}
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+    <section className="stays section" id="stays" aria-labelledby="stays-title"><div className="section-heading"><p>Stays & Works</p><h2 id="stays-title">{isEn ? "Places we support." : "関わってきた宿。"}</h2></div><div className="stay-grid">{stays.map((stay) => <a className="stay-card" href={stay.url} target="_blank" rel="noreferrer" key={stay.name}><div className="stay-image"><img src={stay.image} alt={isEn ? `${stay.name} accommodation` : `${stay.name}の施設写真`} loading="lazy" /></div><div className="stay-meta"><p>{stay.label}</p><h3>{stay.name}</h3><span aria-hidden="true">↗</span></div></a>)}</div></section>
 
-      <section className="contact section" id="contact" aria-labelledby="contact-title">
-        <div className="section-label">
-          <p>Contact</p>
-        </div>
-        <div className="contact-main">
-          <p className="contact-kicker">How can I help?</p>
-          <h2 id="contact-title">まずは、あなたのお話を<br className="contact-mobile-break" />聞かせてください。</h2>
-          <a className="contact-link" href="/contact">
-            <span>お問い合わせ</span><b aria-hidden="true" />
-          </a>
-        </div>
-      </section>
-
-      <footer>
-        <p>Copyright© SAWAMO All rights reserved.</p>
-      </footer>
-    </main>
-  );
+    <section className="contact section" id="contact" aria-labelledby="contact-title"><div className="contact-inner"><p>Contact</p><h2 id="contact-title">{isEn ? <>Tell us about your stay<br />or journey.</> : <>宿のこと、旅のこと。<br />まずはお聞かせください。</>}</h2><p className="contact-copy">{isEn ? "Feel free to contact us about places to stay, starting or managing accommodation, or arranging a guided journey on the Kumano Kodo—even if your plans are still taking shape." : "宿泊先のご相談、民泊の開設・運営、熊野古道の案内について、内容が固まっていなくてもお気軽にご相談ください。"}</p><a className="contact-button" href="/contact">{isEn ? "Go to contact form" : "お問い合わせフォームへ"}<span>→</span></a><div className="contact-direct"><a href="mailto:info@kumanotrailstays.com">info@kumanotrailstays.com</a><a href="tel:08057185597">080-5718-5597</a></div></div></section>
+    <footer><img src="/brand/kumano-trail-stays-logo.png" alt="Kumano Trail Stays" /><p>Copyright © Kumano Trail Stays. All rights reserved.</p></footer>
+  </main>;
 }

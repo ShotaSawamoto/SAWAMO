@@ -11,7 +11,7 @@ export default function MobilePreview() {
     >
       <iframe
         src="/"
-        title="SAWAMO モバイルプレビュー"
+        title="Kumano Trail Stays モバイルプレビュー"
         style={{
           display: "block",
           width: "390px",
