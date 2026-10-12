@@ -30,7 +30,7 @@ jobs:
       XSERVER_USER: ${{ secrets.XSERVER_USER }}
       XSERVER_SSH_KEY: ${{ secrets.XSERVER_SSH_KEY }}
       XSERVER_HOST_KEY: ${{ secrets.XSERVER_HOST_KEY }}
-      XSERVER_DEPLOY_PATH: ${{ secrets.XSERVER_DEPLOY_PATH }}
+      XSERVER_DEPLOY_PATH: /home/${{ secrets.XSERVER_USER }}/kumanotrailstays.com/public_html/
       XSERVER_SSH_PORT: "10022"
       SSH_OPTS: >-
         -i ~/.ssh/id_xserver
