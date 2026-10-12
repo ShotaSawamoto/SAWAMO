@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../useLanguage";
 
 const inquiryTypes = [
@@ -16,6 +16,13 @@ export default function ContactPage() {
   const { language, toggleLanguage } = useLanguage();
   const isEn = language === "en";
   const [submitState,setSubmitState] = useState<SubmitState>("idle");
+  const successRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (submitState !== "success") return;
+    window.scrollTo({ top:0, behavior:"smooth" });
+    successRef.current?.focus({ preventScroll:true });
+  }, [submitState]);
 
   const handleSubmit = async (event:FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,9 +45,10 @@ export default function ContactPage() {
       <nav className="nav contact-page-nav" aria-label={isEn ? "Main navigation" : "メインナビゲーション"}><a href="/#about">About</a><a href="/#services">Services</a><a href="/#stays">Stays</a><a href="/contact" aria-current="page">Contact</a></nav>
       <div className="header-actions"><button className="language-switch" type="button" onClick={toggleLanguage} aria-label={isEn ? "日本語に切り替える" : "Switch to English"}><span>{isEn ? "JP" : "EN"}</span><small>{isEn ? "日本語" : "English"}</small></button><a className="contact-page-back" href="/">← {isEn ? "Back" : "戻る"}</a></div>
     </header>
-    <section className="contact-page-main" aria-labelledby="contact-page-title">
+    <section className={`contact-page-main ${submitState === "success" ? "is-success" : ""}`} aria-labelledby="contact-page-title">
+      {submitState === "success" ? <div className="contact-success" ref={successRef} tabIndex={-1} role="status"><span className="contact-success-mark" aria-hidden="true">✓</span><p className="contact-page-eyebrow">Message sent</p><h1 id="contact-page-title">{isEn ? <>Thank you for<br />your enquiry.</> : <>お問い合わせを<br />送信しました。</>}</h1><p>{isEn ? "Thank you for contacting Kumano Trail Stays. We have received your message and will get back to you shortly." : "Kumano Trail Staysへお問い合わせいただき、ありがとうございます。内容を確認のうえ、折り返しご連絡いたします。"}</p><div className="contact-success-actions"><a className="contact-success-primary" href="/">{isEn ? "Return to home" : "トップページへ"}<span>→</span></a><button type="button" onClick={() => setSubmitState("idle")}>{isEn ? "Send another enquiry" : "続けて問い合わせる"}</button></div></div> : <>
       <div className="contact-page-intro"><p className="contact-page-eyebrow">Contact</p><h1 id="contact-page-title">{isEn ? <><span>Tell us about your</span><span>plans and journey.</span></> : <><span>まずは、あなたのお話を</span><span>聞かせてください。</span></>}</h1><p>{isEn ? "Please tell us what you can about accommodation, your guesthouse plans, management needs or Kumano Kodo journey." : "宿泊、民泊の開設・運営、熊野古道の通訳案内について、わかる範囲でお気軽にご記入ください。"}</p><p className="contact-page-required"><span>＊</span>{isEn ? "Required fields" : "は必須項目です。"}</p></div>
-      <form className="contact-form" onSubmit={handleSubmit}>
+      <form className="contact-form" onSubmit={handleSubmit} aria-busy={submitState === "sending"}>
         <fieldset className="contact-form-types"><legend>{isEn ? "Type of enquiry" : "お問い合わせ種別"}</legend><div className="contact-checkbox-grid">{inquiryTypes.map((type) => <label key={type.en}><input type="checkbox" name="inquiry_type" value={type.en} /><span>{isEn ? type.en : type.ja}</span></label>)}</div></fieldset>
         <label className="contact-field"><span>{isEn ? "Company / Organisation" : "貴社名・屋号"}</span><input type="text" name="company" autoComplete="organization" /></label>
         <label className="contact-field"><span>{isEn ? "Name" : "お名前"} <b>＊</b></span><input type="text" name="name" autoComplete="name" required /></label>
@@ -49,9 +57,10 @@ export default function ContactPage() {
         <label className="contact-field contact-field-message"><span>{isEn ? "Message" : "お問い合わせ内容"} <b>＊</b></span><textarea name="message" rows={8} required /></label>
         <input className="contact-honey" type="text" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" />
         <p className="contact-form-note">{isEn ? "The information you provide will only be used to respond to your enquiry." : "ご入力いただいた情報は、お問い合わせへの回答のためにのみ使用します。"}</p>
-        <button className="contact-submit" type="submit" disabled={submitState === "sending"}><span>{submitState === "sending" ? (isEn ? "Sending…" : "送信中…") : (isEn ? "Send enquiry" : "送信する")}</span><b aria-hidden="true">→</b></button>
-        <div className="contact-form-status" aria-live="polite">{submitState === "success" && <p className="success">{isEn ? "Thank you. Your enquiry has been sent." : "お問い合わせを送信しました。ありがとうございます。"}</p>}{submitState === "error" && <p className="error">{isEn ? "We could not send your enquiry. Please try again later or email info@kumanotrailstays.com." : "送信できませんでした。時間をおいて再度お試しいただくか、info@kumanotrailstays.comへ直接ご連絡ください。"}</p>}</div>
+        <button className={`contact-submit ${submitState === "sending" ? "is-sending" : ""}`} type="submit" disabled={submitState === "sending"}><span>{submitState === "sending" ? (isEn ? "Sending…" : "送信しています…") : (isEn ? "Send enquiry" : "送信する")}</span><b aria-hidden="true">{submitState === "sending" ? "" : "→"}</b></button>
+        <div className="contact-form-status" aria-live="assertive">{submitState === "error" && <p className="error" role="alert">{isEn ? "We could not send your enquiry. Please try again later or email info@kumanotrailstays.com." : "送信できませんでした。時間をおいて再度お試しいただくか、info@kumanotrailstays.comへ直接ご連絡ください。"}</p>}</div>
       </form>
+      </>}
     </section>
     <footer className="contact-page-footer"><img src="/brand/kumano-trail-stays-logo.png" alt="Kumano Trail Stays" /><p>Copyright © Kumano Trail Stays. All rights reserved.</p></footer>
   </main>;
