@@ -42,7 +42,7 @@ export default function ContactPage() {
   return <main className="contact-page" lang={language}>
     <header className="site-header contact-page-header">
       <a className="brand" href="/" aria-label="Kumano Trail Stays"><img src="/brand/kumano-trail-stays-logo.png" alt="Kumano Trail Stays" /></a>
-      <nav className="nav contact-page-nav" aria-label={isEn ? "Main navigation" : "メインナビゲーション"}><a href="/#about">About</a><a href="/#services">Services</a><a href="/#stays">Stays</a><a href="/contact" aria-current="page">Contact</a></nav>
+      <nav className="nav contact-page-nav" aria-label={isEn ? "Main navigation" : "メインナビゲーション"}><a href="/#about">About</a><a href="/#services">Services</a><a href="/#service-staying-trigger">Stays</a><a href="/contact" aria-current="page">Contact</a></nav>
       <div className="header-actions"><button className="language-switch" type="button" onClick={toggleLanguage} aria-label={isEn ? "日本語に切り替える" : "Switch to English"}><span>{isEn ? "JP" : "EN"}</span><small>{isEn ? "日本語" : "English"}</small></button><a className="contact-page-back" href="/">← {isEn ? "Back" : "戻る"}</a></div>
     </header>
     <section className={`contact-page-main ${submitState === "success" ? "is-success" : ""}`} aria-labelledby="contact-page-title">
