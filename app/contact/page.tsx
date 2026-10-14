@@ -4,10 +4,10 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../useLanguage";
 
 const inquiryTypes = [
-  { ja:"民泊開設コンサルティング", en:"Guesthouse Setup Consulting" },
-  { ja:"民泊管理運営代行", en:"Guesthouse Management" },
+  { ja:"民泊開設コンサルティング", en:"Short-term Rental Setup Consulting" },
+  { ja:"民泊管理運営代行", en:"Short-term Rental Management" },
   { ja:"宿泊について", en:"Accommodation" },
-  { ja:"熊野古道通訳案内及び写真・動画撮影", en:"Kumano Kodo Guiding, Photography & Videography" },
+  { ja:"熊野古道通訳案内及び写真・動画撮影", en:"Kumano Kodo Guided Tours, Photography & Videography" },
   { ja:"その他", en:"Other" },
 ];
 type SubmitState = "idle" | "sending" | "success" | "error";
@@ -47,7 +47,7 @@ export default function ContactPage() {
     </header>
     <section className={`contact-page-main ${submitState === "success" ? "is-success" : ""}`} aria-labelledby="contact-page-title">
       {submitState === "success" ? <div className="contact-success" ref={successRef} tabIndex={-1} role="status"><span className="contact-success-mark" aria-hidden="true">✓</span><p className="contact-page-eyebrow">Message sent</p><h1 id="contact-page-title">{isEn ? <>Thank you for<br />your enquiry.</> : <>お問い合わせを<br />送信しました。</>}</h1><p>{isEn ? "Thank you for contacting Kumano Trail Stays. We have received your message and will get back to you shortly." : "Kumano Trail Staysへお問い合わせいただき、ありがとうございます。内容を確認のうえ、折り返しご連絡いたします。"}</p><div className="contact-success-actions"><a className="contact-success-primary" href="/">{isEn ? "Return to home" : "トップページへ"}<span>→</span></a><button type="button" onClick={() => setSubmitState("idle")}>{isEn ? "Send another enquiry" : "続けて問い合わせる"}</button></div></div> : <>
-      <div className="contact-page-intro"><p className="contact-page-eyebrow">Contact</p><h1 id="contact-page-title">{isEn ? <><span>Tell us about your</span><span>plans and journey.</span></> : <><span>まずは、あなたのお話を</span><span>聞かせてください。</span></>}</h1><p>{isEn ? "Please tell us what you can about accommodation, your guesthouse plans, management needs or Kumano Kodo journey." : "宿泊、民泊の開設・運営、熊野古道の通訳案内について、わかる範囲でお気軽にご記入ください。"}</p><p className="contact-page-required"><span>＊</span>{isEn ? "Required fields" : "は必須項目です。"}</p></div>
+      <div className="contact-page-intro"><p className="contact-page-eyebrow">Contact</p><h1 id="contact-page-title">{isEn ? <><span>Tell us about your</span><span>plans and journey.</span></> : <><span>まずは、あなたのお話を</span><span>聞かせてください。</span></>}</h1><p>{isEn ? "Please share any details you have about your accommodation plans, property management needs, or journey along the Kumano Kodo." : "宿泊、民泊の開設・運営、熊野古道の通訳案内について、わかる範囲でお気軽にご記入ください。"}</p><p className="contact-page-required"><span>＊</span>{isEn ? "Required fields" : "は必須項目です。"}</p></div>
       <form className="contact-form" onSubmit={handleSubmit} aria-busy={submitState === "sending"}>
         <fieldset className="contact-form-types"><legend>{isEn ? "Type of enquiry" : "お問い合わせ種別"}</legend><div className="contact-checkbox-grid">{inquiryTypes.map((type) => <label key={type.en}><input type="checkbox" name="inquiry_type" value={type.en} /><span>{isEn ? type.en : type.ja}</span></label>)}</div></fieldset>
         <label className="contact-field"><span>{isEn ? "Company / Organisation" : "貴社名・屋号"}</span><input type="text" name="company" autoComplete="organization" /></label>
