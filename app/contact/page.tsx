@@ -7,7 +7,7 @@ const inquiryTypes = [
   { ja:"民泊開設コンサルティング", en:"Guesthouse Setup Consulting" },
   { ja:"民泊管理運営代行", en:"Guesthouse Management" },
   { ja:"宿泊について", en:"Accommodation" },
-  { ja:"熊野古道通訳案内", en:"Kumano Kodo Guiding & Interpretation" },
+  { ja:"熊野古道通訳案内及び写真・動画撮影", en:"Kumano Kodo Guiding, Photography & Videography" },
   { ja:"その他", en:"Other" },
 ];
 type SubmitState = "idle" | "sending" | "success" | "error";
