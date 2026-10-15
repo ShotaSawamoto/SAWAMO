@@ -70,7 +70,7 @@ export default function Home() {
     <div className="progress" ref={progressRef} />
     <header className="site-header">
       <a className="brand" href="#top" onClick={closeMenu} aria-label="Kumano Trail Stays"><img src="/brand/kumano-trail-stays-logo.png" alt="Kumano Trail Stays" /></a>
-      <nav className={menuOpen ? "nav open" : "nav"} aria-label={isEn ? "Main navigation" : "メインナビゲーション"}><a href="#about" onClick={closeMenu}>About</a><a href="#services" onClick={closeMenu}>Services</a><a className="nav-stays" href="#service-staying-trigger" onClick={() => { setOpenService("staying"); closeMenu(); }}>Stays</a><a href="#contact" onClick={closeMenu}>Contact</a></nav>
+      <nav className={menuOpen ? "nav open" : "nav"} aria-label={isEn ? "Main navigation" : "メインナビゲーション"}><a href="#about" onClick={closeMenu}>About</a><a href="#services" onClick={closeMenu}>Services</a><a href="#contact" onClick={closeMenu}>Contact</a></nav>
       <div className="header-actions"><button className="language-switch" type="button" onClick={toggleLanguage} aria-label={isEn ? "日本語に切り替える" : "Switch to English"}><span>{isEn ? "JP" : "EN"}</span><small>{isEn ? "日本語" : "English"}</small></button><button className={menuOpen ? "menu-button open" : "menu-button"} type="button" aria-label={menuOpen ? (isEn ? "Close menu" : "メニューを閉じる") : (isEn ? "Open menu" : "メニューを開く")} aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}><span /><span /></button></div>
     </header>
 
