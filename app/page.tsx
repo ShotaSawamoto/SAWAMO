@@ -33,6 +33,7 @@ export default function Home() {
   const [openService, setOpenService] = useState<string | null>(null);
   const [lightboxPhoto, setLightboxPhoto] = useState<{ photos:string[]; index:number } | null>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const serviceScrollTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     let frame = 0;
@@ -41,6 +42,8 @@ export default function Home() {
     update(); window.addEventListener("scroll", onScroll, { passive:true });
     return () => { window.removeEventListener("scroll", onScroll); if (frame) cancelAnimationFrame(frame); };
   }, []);
+
+  useEffect(() => () => { if (serviceScrollTimerRef.current !== null) window.clearTimeout(serviceScrollTimerRef.current); }, []);
 
   useEffect(() => {
     if (!lightboxPhoto) return;
@@ -56,12 +59,21 @@ export default function Home() {
   }, [lightboxPhoto]);
 
   const closeMenu = () => setMenuOpen(false);
-  const toggleService = (id:string, trigger:HTMLButtonElement) => {
-    if (openService === id) { setOpenService(null); return; }
-    const article = trigger.closest<HTMLElement>(".service-card");
-    const headerHeight = document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 0;
+  const toggleService = (id:string, _trigger:HTMLButtonElement) => {
+    if (openService === id) {
+      if (serviceScrollTimerRef.current !== null) window.clearTimeout(serviceScrollTimerRef.current);
+      serviceScrollTimerRef.current = null;
+      setOpenService(null);
+      return;
+    }
     setOpenService(id);
-    if (article) requestAnimationFrame(() => window.scrollTo({ top:Math.max(0,window.scrollY + article.getBoundingClientRect().top - headerHeight - 12), behavior:"smooth" }));
+    if (serviceScrollTimerRef.current !== null) window.clearTimeout(serviceScrollTimerRef.current);
+    serviceScrollTimerRef.current = window.setTimeout(() => {
+      const trigger = document.getElementById(`service-${id}-trigger`);
+      const headerHeight = document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 0;
+      if (trigger) window.scrollTo({ top:Math.max(0,window.scrollY + trigger.getBoundingClientRect().top - headerHeight - 12), behavior:"smooth" });
+      serviceScrollTimerRef.current = null;
+    }, 480);
   };
   const showPreviousPhoto = () => setLightboxPhoto((current) => current ? { ...current, index:(current.index - 1 + current.photos.length) % current.photos.length } : null);
   const showNextPhoto = () => setLightboxPhoto((current) => current ? { ...current, index:(current.index + 1) % current.photos.length } : null);
