@@ -24,7 +24,7 @@ img { max-width:100%; }
 .language-switch:hover { color:var(--forest); background:var(--mist); transform:translateY(-1px); }
 
 .hero { position:relative; min-height:100svh; padding:132px 6vw 76px; display:flex; align-items:center; overflow:hidden; color:white; background:var(--forest); }
-.hero-image { position:absolute; inset:0; background:url('/brand/kumano-gallery/kumano-06.jpg') center 48%/cover no-repeat; transform:scale(1.03); }
+.hero-image { position:absolute; inset:0; background:url('/brand/kumano-gallery/kumano-03.jpg') center 48%/cover no-repeat; transform:scale(1.03); }
 .hero-overlay { position:absolute; inset:0; background:linear-gradient(90deg,rgba(8,38,24,.92) 0%,rgba(8,38,24,.72) 46%,rgba(8,38,24,.24) 78%,rgba(8,38,24,.2) 100%); }
 .hero-content { position:relative; z-index:3; width:min(900px,90vw); }
 .hero-eyebrow { margin:0 0 28px; color:#dce8d8; font-size:12px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; }
